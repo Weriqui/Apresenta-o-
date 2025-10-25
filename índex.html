@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Roteiro — Oratória (10 min)</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <style>
+    :root{
+      --bg:#0b0f16;
+      --panel:#121827;
+      --ink:#f6f7fb;
+      --muted:#9aa4b2;
+      --accent:#26c6da;
+      --accent-2:#69f0ae;
+      --danger:#ff5252;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 800px at 20% 0%, #0f1422 0%, #0b0f16 60%, #0b0f16 100%);
+    }
+
+    /* Layout principal */
+    .wrap{
+      height:100%;
+      display:grid;
+      grid-template-rows: auto 1fr auto;
+      gap:1.2rem;
+      padding:1rem clamp(1rem,2vw,2rem);
+    }
+
+    /* Topbar com timers e barra de progresso */
+    .topbar{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:1rem;
+      align-items:center;
+    }
+    .timers{
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.75rem 1.25rem;
+      align-items:baseline;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      font-weight:700;
+      letter-spacing:.02em;
+      border:1px solid #233047;
+      background:linear-gradient(180deg,#131a2a,#0e1523);
+      padding:.35rem .7rem;
+      border-radius:.6rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+      color:var(--ink);
+    }
+    .badge small{color:var(--muted); font-weight:600}
+    .bigtime{
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+    }
+    .controls{
+      display:flex; gap:.6rem; flex-wrap:wrap;
+    }
+    button{
+      appearance:none; border:0; cursor:pointer;
+      padding:.7rem 1rem; border-radius:.8rem;
+      font-weight:800; letter-spacing:.02em;
+      background: linear-gradient(180deg, #1b2438, #141b2c);
+      color:var(--ink);
+      border:1px solid #25324a;
+      transition: transform .05s ease;
+    }
+    button:active{ transform: translateY(1px) }
+    .primary{ background: linear-gradient(180deg,#1c2d38,#14242b); border-color:#1e3a4c }
+    .ghost{ background:transparent; border-color:#2a3a55 }
+    .danger{ background: linear-gradient(180deg,#3a1c20,#2a1216); border-color:#411a1f }
+
+    /* Barras de progresso */
+    .bar{
+      height:.55rem; border-radius:999px; overflow:hidden;
+      background: #101729; border:1px solid #1d2942;
+      position:relative;
+    }
+    .bar > span{
+      position:absolute; inset:0 100% 0 0;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: inset .25s ease;
+    }
+    .bar.small{ height:.45rem; opacity:.9 }
+
+    /* Área do slide */
+    .stage{
+      position:relative;
+      overflow:hidden;
+      border-radius:1.2rem;
+      background: linear-gradient(180deg, #0f1423, #0c111d);
+      border:1px solid #1e2942;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);
+      padding: clamp(1rem, 2vw, 1.5rem);
+    }
+    .slide{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      padding: clamp(1rem, 2vw, 2rem);
+    }
+    .slide.hidden{ visibility:hidden }
+    .label{
+      position:absolute; top:1rem; left:1rem;
+      color:#c7d2fe; background:#0d1220; border:1px solid #202a44;
+      padding:.35rem .6rem; font-weight:800; border-radius:.5rem; letter-spacing:.03em;
+      text-transform:uppercase; font-size: clamp(.65rem, 1.4vw, .85rem);
+      opacity:.9
+    }
+    .topic{
+      max-width: 90ch;
+      text-align:center;
+      line-height: 1.1;
+      /* enorme mas responsivo */
+      font-size: clamp(2rem, 8.5vw, 7rem);
+      font-weight: 900;
+      letter-spacing: -.02em;
+      text-wrap: balance;
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,.03));
+    }
+    .sub{
+      margin-top: 1rem;
+      color:var(--muted);
+      font-size: clamp(1rem, 2.3vw, 1.4rem);
+      text-align:center;
+    }
+
+    /* Rodapé com progresso do tópico */
+    .footer{
+      display:grid; gap:.6rem;
+      grid-template-columns: 1fr auto;
+      align-items:center;
+    }
+    .footer .legend{
+      color:var(--muted); font-weight:700; letter-spacing:.02em
+    }
+
+    /* Acessibilidade visual extra (borda piscando nos últimos 10s do tópico) */
+    .warning{
+      animation: blink .9s infinite steps(2, jump-none);
+      box-shadow: 0 0 0 3px var(--danger);
+    }
+    @keyframes blink { 50%{ box-shadow: 0 0 0 3px transparent } }
+
+    /* Seleção e foco */
+    ::selection{ background:#1a2a44; color:var(--ink) }
+    button:focus-visible{ outline:3px solid #3b82f6; outline-offset:1px }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <!-- Topo: timers e controles -->
+    <div class="topbar">
+      <div class="timers">
+        <div class="badge">
+          <small>Total</small>
+          <span class="bigtime" id="totalClock">10:00</span>
+        </div>
+        <div class="badge">
+          <small>Tópico</small>
+          <span class="bigtime" id="segmentClock">01:00</span>
+        </div>
+        <div class="badge">
+          <small>Atual</small>
+          <span id="currentLabel" class="bigtime">Introdução</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="startBtn" class="primary">Iniciar</button>
+        <button id="pauseBtn" class="ghost" disabled>Pausar</button>
+        <button id="prevBtn" class="ghost" disabled>◀︎ Anterior</button>
+        <button id="nextBtn" class="ghost" disabled>Próximo ▶︎</button>
+        <button id="resetBtn" class="danger" disabled>Reiniciar</button>
+        <button id="fsBtn" class="ghost" title="Tela Cheia (F)">Tela cheia</button>
+      </div>
+      <div class="bar" style="grid-column: 1 / -1;">
+        <span id="totalBar"></span>
+      </div>
+    </div>
+
+    <!-- Palco: dois layers para o efeito de slide -->
+    <main class="stage" id="stage" aria-live="polite">
+      <div class="slide" id="slideA">
+        <div class="label" id="slideALabel">Introdução</div>
+        <div class="topic" id="slideAText">
+          Ninguém acorda querendo comprar um triturador de frutas; as pessoas acordam querendo uma vida mais saudável.
+        </div>
+        <div class="sub" id="slideASub"></div>
+      </div>
+      <div class="slide hidden" id="slideB">
+        <div class="label" id="slideBLabel"></div>
+        <div class="topic" id="slideBText"></div>
+        <div class="sub" id="slideBSub"></div>
+      </div>
+    </main>
+
+    <!-- Rodapé: progresso do tópico -->
+    <div class="footer">
+      <div class="legend">Progresso do tópico</div>
+      <div class="legend" id="topicIndex">1 / 7</div>
+      <div class="bar small" style="grid-column: 1 / -1;">
+        <span id="segmentBar"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-+hx/3nU8Ost7WZqQEeXqR2p2a6C2g2GJ9pM0EcTgGm1HH4XWkqM1uQRZ2o+GXeh0Qu2pxaHeWUeVv0s4pZAYsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    // ======= CONFIGURAÇÃO DO ROTEIRO (edite aqui se quiser ajustar) =======
+    const slides = [
+      {
+        label: "Introdução",
+        text: "Ninguém acorda querendo comprar um triturador de frutas; as pessoas acordam querendo uma vida mais saudável.",
+        duration: 60
+      },
+      {
+        label: "Tópico 1",
+        text: "Algumas pessoas compram serviços; muitas pessoas compram soluções.",
+        duration: 90
+      },
+      {
+        label: "Tópico 2",
+        text: "O cliente diz muito quando fala e quando não fala. Então, ouça.",
+        duration: 90
+      },
+      {
+        label: "Tópico 3",
+        text: "Não seja técnico, seja empático.",
+        duration: 90
+      },
+      {
+        label: "Tópico 4",
+        text: "Pareça confiante, fale com firmeza, pois a primeira impressão fica.",
+        duration: 90
+      },
+      {
+        label: "Tópico 5",
+        text: "Venda o sonho. Se comprometa e nunca garanta.",
+        duration: 120
+      },
+      {
+        label: "Conclusão",
+        text: "Conclusão.",
+        duration: 60
+      }
+    ];
+    // =====================================================================
+
+    // Utilidades
+    const totalDuration = slides.reduce((acc, s) => acc + s.duration, 0); // em segundos
+    const pad = n => String(n).padStart(2, "0");
+    const fmt = secs => `${pad(Math.floor(secs/60))}:${pad(Math.max(0, Math.floor(secs%60)))}`;
+
+    // Elementos
+    const totalClock   = document.getElementById("totalClock");
+    const segmentClock = document.getElementById("segmentClock");
+    const currentLabel = document.getElementById("currentLabel");
+    const totalBar     = document.getElementById("totalBar");
+    const segmentBar   = document.getElementById("segmentBar");
+    const topicIndexEl = document.getElementById("topicIndex");
+    const stage        = document.getElementById("stage");
+
+    // Dois layers para animar entre eles
+    const layers = {
+      A: {
+        box:  document.getElementById("slideA"),
+        label:document.getElementById("slideALabel"),
+        text: document.getElementById("slideAText"),
+        sub:  document.getElementById("slideASub"),
+      },
+      B: {
+        box:  document.getElementById("slideB"),
+        label:document.getElementById("slideBLabel"),
+        text: document.getElementById("slideBText"),
+        sub:  document.getElementById("slideBSub"),
+      }
+    };
+    let front = 'A'; // layer na frente
+    const back  = () => (front === 'A' ? 'B' : 'A');
+
+    // Estado
+    let started = false, paused = false;
+    let startTs = 0, pauseTs = 0, pausedAccum = 0;
+    let idx = 0;
+    let rafId = null;
+
+    // Controles
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const nextBtn  = document.getElementById("nextBtn");
+    const prevBtn  = document.getElementById("prevBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const fsBtn    = document.getElementById("fsBtn");
+
+    function setControls(state){
+      // state: idle, running, paused, finished
+      const g = (b, on) => b.disabled = !on;
+      if(state === 'idle'){
+        g(startBtn, true); g(pauseBtn, false); g(nextBtn, false); g(prevBtn, false); g(resetBtn, false);
+      } else if(state === 'running'){
+        g(startBtn, false); g(pauseBtn, true); g(nextBtn, true); g(prevBtn, true); g(resetBtn, true);
+        pauseBtn.textContent = 'Pausar';
+      } else if(state === 'paused'){
+        g(startBtn, false); g(pauseBtn, true); g(nextBtn, true); g(prevBtn, true); g(resetBtn, true);
+        pauseBtn.textContent = 'Retomar';
+      } else if(state === 'finished'){
+        g(startBtn, false); g(pauseBtn, false); g(nextBtn, false); g(prevBtn, false); g(resetBtn, true);
+      }
+    }
+
+    // Inicializa visão do primeiro slide (sem animação)
+    function mountInitial(){
+      const s = slides[0];
+      layers.A.label.textContent = s.label;
+      layers.A.text.textContent  = s.text;
+      layers.B.label.textContent = '';
+      layers.B.text.textContent  = '';
+      totalClock.textContent     = fmt(totalDuration);
+      segmentClock.textContent   = fmt(slides[0].duration);
+      currentLabel.textContent   = s.label;
+      topicIndexEl.textContent   = `1 / ${slides.length}`;
+      setControls('idle');
+    }
+    mountInitial();
+
+    // Calcula quanto já passou dentro do tópico atual
+    function elapsedInCurrent(nowSecs){
+      let spent = 0;
+      for(let i=0;i<idx;i++){ spent += slides[i].duration; }
+      return Math.max(0, nowSecs - spent);
+    }
+
+    // Timer + avanço automático
+    function tick(){
+      if(!started){ return; }
+
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTs - pausedAccum)/1000);
+
+      // Total
+      const remaining = Math.max(0, totalDuration - elapsed);
+      totalClock.textContent = fmt(remaining);
+      totalBar.style.inset = `0 ${100 - (elapsed/totalDuration)*100}% 0 0`;
+
+      // Segmento
+      const segElapsed = elapsedInCurrent(elapsed);
+      const segDur = slides[idx].duration;
+      const segRemaining = Math.max(0, segDur - segElapsed);
+      segmentClock.textContent = fmt(segRemaining);
+      segmentBar.style.inset = `0 ${Math.max(0, 100 - (segElapsed/segDur)*100)}% 0 0`;
+
+      // Sinal visual nos últimos 10s do tópico
+      if(segRemaining <= 10){
+        stage.classList.add('warning');
+      }else{
+        stage.classList.remove('warning');
+      }
+
+      // Avança automaticamente quando o segmento acabar
+      if(segElapsed >= segDur){
+        goNext('auto');
+      }
+
+      if(elapsed >= totalDuration){
+        finish();
+        return;
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // Mostra slide idx no layer de trás e faz animação de slide
+    function showSlide(newIdx, direction = 'next'){
+      const incoming = layers[back()];
+      const outgoing = layers[front];
+
+      const s = slides[newIdx];
+      incoming.label.textContent = s.label;
+      incoming.text.textContent  = s.text;
+
+      // reset posições
+      gsap.set(incoming.box, { xPercent: (direction === 'next' ? 100 : -100), autoAlpha:1 });
+      incoming.box.classList.remove('hidden');
+      outgoing.box.classList.remove('hidden');
+
+      // timeline da transição
+      const tl = gsap.timeline({ defaults: { duration: .65, ease: "power3.inOut" } });
+      tl.to(outgoing.box, { xPercent: (direction === 'next' ? -100 : 100), autoAlpha:0 }, 0)
+        .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
+        .add(() => {
+          // troca as frentes
+          outgoing.box.classList.add('hidden');
+          front = back();
+        });
+
+      // Atualiza HUD
+      currentLabel.textContent = s.label;
+      topicIndexEl.textContent = `${newIdx+1} / ${slides.length}`;
+      segmentClock.textContent = fmt(slides[newIdx].duration);
+    }
+
+    function goNext(reason='manual'){
+      if(idx >= slides.length - 1){ finish(); return; }
+      idx++;
+      showSlide(idx, 'next');
+    }
+    function goPrev(){
+      if(idx <= 0) return;
+      idx--;
+      showSlide(idx, 'prev');
+    }
+
+    function start(){
+      if(started) return;
+      started = true;
+      startTs = Date.now();
+      pausedAccum = 0;
+      setControls('running');
+      // Garante que estamos no primeiro slide visualmente
+      idx = 0;
+      showSlide(0, 'next');
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function pauseResume(){
+      if(!started) return;
+      if(!paused){
+        paused = true;
+        pauseTs = Date.now();
+        setControls('paused');
+        cancelAnimationFrame(rafId);
+      }else{
+        paused = false;
+        pausedAccum += (Date.now() - pauseTs);
+        setControls('running');
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function finish(){
+      started = false;
+      setControls('finished');
+      cancelAnimationFrame(rafId);
+      // Slide final: escreve "FIM"
+      const incoming = layers[back()];
+      incoming.label.textContent = "Concluído";
+      incoming.text.textContent  = "Obrigado!";
+      gsap.set(incoming.box, { xPercent: 100, autoAlpha:1 });
+      incoming.box.classList.remove('hidden');
+      gsap.timeline({ defaults:{ duration:.65, ease:"power3.inOut" }})
+         .to(layers[front].box, { xPercent: -100, autoAlpha:0 }, 0)
+         .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
+         .add(()=>{ front = back(); });
+      totalClock.textContent = "00:00";
+      segmentClock.textContent = "00:00";
+      totalBar.style.inset = "0 0 0 0";
+      segmentBar.style.inset = "0 0 0 0";
+      stage.classList.remove('warning');
+    }
+
+    function reset(){
+      cancelAnimationFrame(rafId);
+      started=false; paused=false; idx=0; startTs=0; pauseTs=0; pausedAccum=0;
+      // Traz layer A à frente e limpa B
+      front = 'A';
+      layers.A.box.classList.remove('hidden');
+      layers.B.box.classList.add('hidden');
+      gsap.set(layers.A.box, { xPercent:0, autoAlpha:1 });
+      gsap.set(layers.B.box, { xPercent:0, autoAlpha:1 });
+      mountInitial();
+    }
+
+    // Eventos de UI
+    startBtn.addEventListener('click', start);
+    pauseBtn.addEventListener('click', pauseResume);
+    nextBtn.addEventListener('click', goNext);
+    prevBtn.addEventListener('click', goPrev);
+    resetBtn.addEventListener('click', reset);
+    fsBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(()=>{});
+      } else {
+        document.exitFullscreen().catch(()=>{});
+      }
+    });
+
+    // Teclas de atalho
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === ' '){ e.preventDefault(); if(started) pauseResume(); }
+      if(e.key === 'ArrowRight'){ goNext(); }
+      if(e.key === 'ArrowLeft'){ goPrev(); }
+      if(e.key.toLowerCase() === 'f'){ fsBtn.click(); }
+      if(e.key.toLowerCase() === 'r'){ reset(); }
+    });
+
+    // Estados iniciais dos botões
+    setControls('idle');
+  </script>
+</body>
+</html>
