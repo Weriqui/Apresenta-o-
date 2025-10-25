@@ -5,7 +5,7 @@
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Roteiro — Oratória (10 min)</title>
+  <title>Roteiro — Como Vender um Serviço/Site (10 min)</title>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
   <style>
     :root{
@@ -16,6 +16,8 @@
       --accent:#26c6da;
       --accent-2:#69f0ae;
       --danger:#ff5252;
+      --warning:#ffa726;
+      --success:#66bb6a;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -106,46 +108,159 @@
       background: linear-gradient(180deg, #0f1423, #0c111d);
       border:1px solid #1e2942;
       box-shadow: 0 10px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);
-      padding: clamp(1rem, 2vw, 1.5rem);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .slide{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      padding: clamp(1rem, 2vw, 2rem);
+      position:absolute; 
+      inset:0;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1.5rem, 3vw, 3rem);
+      gap: 1.5rem;
     }
     .slide.hidden{ visibility:hidden; pointer-events:none }
+    
     .label{
-      position:absolute; top:1rem; left:1rem;
-      color:#c7d2fe; background:#0d1220; border:1px solid #202a44;
-      padding:.35rem .6rem; font-weight:800; border-radius:.5rem; letter-spacing:.03em;
-      text-transform:uppercase; font-size: clamp(.65rem, 1.4vw, .85rem);
-      opacity:.9
+      position:absolute; 
+      top:1.5rem; 
+      left:1.5rem;
+      color:#c7d2fe; 
+      background:#0d1220; 
+      border:1px solid #202a44;
+      padding:.4rem .8rem; 
+      font-weight:800; 
+      border-radius:.6rem; 
+      letter-spacing:.03em;
+      text-transform:uppercase; 
+      font-size: clamp(.7rem, 1.5vw, .9rem);
+      opacity:.95;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
     }
+    
+    .content{
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    
     .topic{
-      max-width: 90ch;
       text-align:center;
-      line-height: 1.1;
-      font-size: clamp(2rem, 8.5vw, 7rem);
+      line-height: 1.15;
+      font-size: clamp(1.8rem, 6vw, 4.5rem);
       font-weight: 900;
-      letter-spacing: -.02em;
+      letter-spacing: -.025em;
       text-wrap: balance;
-      filter: drop-shadow(0 1px 0 rgba(255,255,255,.03));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      max-width: 90%;
     }
+    
     .sub{
-      margin-top: 1rem;
       color:var(--muted);
-      font-size: clamp(1rem, 2.3vw, 1.4rem);
+      font-size: clamp(1rem, 2.2vw, 1.5rem);
       text-align:center;
+      line-height: 1.4;
+      max-width: 85%;
+      text-wrap: balance;
+    }
+    
+    .stats{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 1rem;
+    }
+    
+    .stat-card{
+      background: linear-gradient(135deg, #1a2332, #151c2a);
+      border: 1px solid #2a3a55;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    }
+    
+    .stat-value{
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .5rem;
+    }
+    
+    .stat-label{
+      color: var(--muted);
+      font-size: clamp(.85rem, 1.5vw, 1.1rem);
+      line-height: 1.3;
+    }
+    
+    .examples{
+      background: linear-gradient(135deg, #1a2538, #141d2c);
+      border: 1px solid #2a3a55;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .examples h3{
+      color: var(--accent);
+      font-size: clamp(1rem, 1.8vw, 1.3rem);
+      margin: 0 0 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-weight: 700;
+    }
+    
+    .example-item{
+      color: var(--ink);
+      padding: .5rem 0;
+      border-bottom: 1px solid #1e2a3a;
+      font-size: clamp(.9rem, 1.6vw, 1.15rem);
+      line-height: 1.5;
+    }
+    
+    .example-item:last-child{
+      border-bottom: none;
+    }
+    
+    .example-item strong{
+      color: var(--accent-2);
+    }
+    
+    .quote{
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--ink);
+      text-align: center;
+      padding: 1.5rem;
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(90deg, rgba(38,198,218,.05), transparent);
+      max-width: 800px;
     }
 
     /* Rodapé com progresso do tópico */
     .footer{
-      display:grid; gap:.6rem;
+      display:grid; 
+      gap:.6rem;
       grid-template-columns: 1fr auto;
       align-items:center;
     }
     .footer .legend{
-      color:var(--muted); font-weight:700; letter-spacing:.02em
+      color:var(--muted); 
+      font-weight:700; 
+      letter-spacing:.02em
     }
 
     /* Acessibilidade visual extra (borda piscando nos últimos 10s do tópico) */
@@ -158,6 +273,19 @@
     /* Seleção e foco */
     ::selection{ background:#1a2a44; color:var(--ink) }
     button:focus-visible{ outline:3px solid #3b82f6; outline-offset:1px }
+    
+    /* Responsividade para mobile */
+    @media (max-width: 768px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .stage {
+        padding: clamp(1rem, 2vw, 1.5rem);
+      }
+      .examples {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -175,7 +303,7 @@
         </div>
         <div class="badge">
           <small>Atual</small>
-          <span id="currentLabel" class="bigtime">Introdução</span>
+          <span id="currentLabel" class="bigtime">Abertura</span>
         </div>
       </div>
       <div class="controls">
@@ -194,23 +322,17 @@
     <!-- Palco: dois layers para o efeito de slide -->
     <main class="stage" id="stage" aria-live="polite">
       <div class="slide" id="slideA">
-        <div class="label" id="slideALabel">Introdução</div>
-        <div class="topic" id="slideAText">
-          Ninguém acorda querendo comprar um triturador de frutas; as pessoas acordam querendo uma vida mais saudável.
-        </div>
-        <div class="sub" id="slideASub"></div>
+        <!-- Conteúdo será preenchido dinamicamente -->
       </div>
       <div class="slide hidden" id="slideB">
-        <div class="label" id="slideBLabel"></div>
-        <div class="topic" id="slideBText"></div>
-        <div class="sub" id="slideBSub"></div>
+        <!-- Conteúdo será preenchido dinamicamente -->
       </div>
     </main>
 
     <!-- Rodapé: progresso do tópico -->
     <div class="footer">
       <div class="legend">Progresso do tópico</div>
-      <div class="legend" id="topicIndex">1 / 7</div>
+      <div class="legend" id="topicIndex">1 / 8</div>
       <div class="bar small" style="grid-column: 1 / -1;">
         <span id="segmentBar"></span>
       </div>
@@ -221,48 +343,270 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
-    // ======= CONFIGURAÇÃO DO ROTEIRO (edite aqui se quiser ajustar) =======
+    // ======= CONFIGURAÇÃO DO ROTEIRO COMPLETO =======
     const slides = [
       {
-        label: "Introdução",
-        text: "Ninguém acorda querendo comprar um triturador de frutas; as pessoas acordam querendo uma vida mais saudável.",
-        duration: 60
+        label: "Abertura",
+        duration: 60,
+        content: `
+          <div class="content">
+            <div class="quote">
+              "Ninguém acorda querendo comprar um triturador de frutas; 
+              as pessoas acordam querendo uma vida mais saudável."
+            </div>
+            <div class="sub">— João Apolinário</div>
+            <div class="topic" style="margin-top: 2rem;">
+              Vamos falar de <strong style="color: var(--accent);">resultados</strong>, 
+              não de ferramentas
+            </div>
+            <div class="sub" style="margin-top: 1rem;">
+              5 pontos rápidos sobre como vender soluções
+            </div>
+          </div>
+        `
       },
       {
-        label: "Tópico 1",
-        text: "Algumas pessoas compram serviços; muitas pessoas compram soluções.",
-        duration: 90
+        label: "Tópico 1 • Soluções",
+        duration: 90,
+        content: `
+          <div class="content">
+            <div class="topic">
+              Algumas pessoas compram serviços;<br>
+              <strong style="color: var(--accent);">muitas pessoas compram soluções</strong>
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">61%</div>
+                <div class="stat-label">preferem comprar sem vendedor (rep-free)</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">2.8x</div>
+                <div class="stat-label">mais chance de compra fácil com buyer enablement</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">3x</div>
+                <div class="stat-label">mais chance de acordo maior sem arrependimento</div>
+              </div>
+            </div>
+            <div class="examples">
+              <h3>Exemplo prático:</h3>
+              <div class="example-item">
+                ❌ "Site com 6 páginas e blog"
+              </div>
+              <div class="example-item">
+                ✅ "Captação contínua de orçamentos via formulário + WhatsApp + prova social"
+              </div>
+            </div>
+          </div>
+        `
       },
       {
-        label: "Tópico 2",
-        text: "O cliente diz muito quando fala e quando não fala. Então, ouça.",
-        duration: 90
+        label: "Tópico 2 • Ouvir",
+        duration: 90,
+        content: `
+          <div class="content">
+            <div class="topic">
+              O cliente diz muito quando fala<br>
+              e quando <strong style="color: var(--accent);">não fala</strong>.<br>
+              Então, ouça.
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">43:57</div>
+                <div class="stat-label">Proporção ideal falar vs ouvir em vendas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">44%</div>
+                <div class="stat-label">apontam "não entender necessidades" como deal-killer</div>
+              </div>
+            </div>
+            <div class="examples">
+              <h3>Perguntas que revelam o não-dito:</h3>
+              <div class="example-item">
+                "Qual <strong>resultado de negócio</strong> você quer em 90 dias?"
+              </div>
+              <div class="example-item">
+                "O que já tentaram e <strong>não funcionou</strong>?"
+              </div>
+              <div class="example-item">
+                "Quem mais decide e o que essa pessoa <strong>valoriza</strong>?"
+              </div>
+            </div>
+          </div>
+        `
       },
       {
-        label: "Tópico 3",
-        text: "Não seja técnico, seja empático.",
-        duration: 90
+        label: "Tópico 3 • Empatia",
+        duration: 90,
+        content: `
+          <div class="content">
+            <div class="topic">
+              Não seja técnico,<br>
+              seja <strong style="color: var(--accent);">empático</strong>
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">80%</div>
+                <div class="stat-label">consideram experiência tão importante quanto produto</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">73%</div>
+                <div class="stat-label">esperam personalização</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">44%</div>
+                <div class="stat-label">escolhem vendedor que demonstra conhecer suas necessidades</div>
+              </div>
+            </div>
+            <div class="examples">
+              <h3>Traduzindo técnico → benefício:</h3>
+              <div class="example-item">
+                ❌ "SSL e páginas leves"
+              </div>
+              <div class="example-item">
+                ✅ "Confiança e mais conversões no mobile"
+              </div>
+              <div class="example-item">
+                ❌ "Integração de CRM"
+              </div>
+              <div class="example-item">
+                ✅ "Nunca mais perder follow-up e resposta mais rápida"
+              </div>
+            </div>
+          </div>
+        `
       },
       {
-        label: "Tópico 4",
-        text: "Pareça confiante, fale com firmeza, pois a primeira impressão fica.",
-        duration: 90
+        label: "Tópico 4 • Primeira Impressão",
+        duration: 90,
+        content: `
+          <div class="content">
+            <div class="topic">
+              Pareça confiante, fale com firmeza,<br>
+              pois a <strong style="color: var(--accent);">primeira impressão fica</strong>
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">100ms</div>
+                <div class="stat-label">tempo para formar primeira impressão</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">Tom baixo</div>
+                <div class="stat-label">julgado como mais competente e confiável</div>
+              </div>
+            </div>
+            <div class="examples">
+              <h3>Checklist para os primeiros 60 segundos:</h3>
+              <div class="example-item">
+                ✓ Postura aberta e confiante
+              </div>
+              <div class="example-item">
+                ✓ Ritmo moderado de fala
+              </div>
+              <div class="example-item">
+                ✓ "Sorriso na voz" (tom amigável)
+              </div>
+              <div class="example-item">
+                ✓ Frase de impacto curta
+              </div>
+              <div class="example-item">
+                ✓ Olhar distribuído pela sala (presencial)
+              </div>
+            </div>
+          </div>
+        `
       },
       {
-        label: "Tópico 5",
-        text: "Venda o sonho. Se comprometa e nunca garanta.",
-        duration: 120
+        label: "Tópico 5 • Compromisso",
+        duration: 120,
+        content: `
+          <div class="content">
+            <div class="topic">
+              Venda o sonho.<br>
+              Se comprometa —<br>
+              e <strong style="color: var(--danger);">nunca garanta</strong>
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">15 pessoas</div>
+                <div class="stat-label">recebem relato de experiência ruim</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">35%</div>
+                <div class="stat-label">reduzem gastos após má experiência</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">88%</div>
+                <div class="stat-label">recompram com boa experiência</div>
+              </div>
+            </div>
+            <div class="examples">
+              <h3>Exemplo de posicionamento correto:</h3>
+              <div class="example-item">
+                "Meu compromisso é construir e iterar um funil para atingir <strong>X resultado</strong> 
+                que faz sentido para o seu negócio, medindo semanalmente [métricas]."
+              </div>
+              <div class="example-item">
+                "Não prometo ranking #1, prometo <strong>processo, transparência e ajustes</strong> 
+                até encontrar o que funciona."
+              </div>
+            </div>
+            <div class="sub" style="margin-top: 1rem; color: var(--warning);">
+              Comprometa-se com processo, marcos e métricas — não com resultados garantidos
+            </div>
+          </div>
+        `
       },
       {
-        label: "Conclusão",
-        text: "Conclusão.",
-        duration: 60
+        label: "Recap",
+        duration: 40,
+        content: `
+          <div class="content">
+            <div class="topic">Recapitulando os 5 pontos:</div>
+            <div class="examples" style="max-width: 700px;">
+              <div class="example-item">
+                1️⃣ <strong>Solução > Serviço</strong> — Venda resultados, não ferramentas
+              </div>
+              <div class="example-item">
+                2️⃣ <strong>Ouça mais</strong> — 43% falar, 57% ouvir
+              </div>
+              <div class="example-item">
+                3️⃣ <strong>Empatia > Técnica</strong> — Traduza para benefícios
+              </div>
+              <div class="example-item">
+                4️⃣ <strong>Primeira impressão</strong> — 100ms que definem tudo
+              </div>
+              <div class="example-item">
+                5️⃣ <strong>Compromisso sem garantias</strong> — Processo, não promessas
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        label: "Encerramento",
+        duration: 20,
+        content: `
+          <div class="content">
+            <div class="topic">
+              Qual '<strong style="color: var(--accent);">vida mais saudável</strong>' 
+              o seu serviço entrega?
+            </div>
+            <div class="sub" style="font-size: clamp(1.2rem, 2.5vw, 1.8rem); margin-top: 2rem;">
+              Se souber isso, o 'triturador' vira só o meio —<br>
+              e a venda acontece.
+            </div>
+            <div class="topic" style="margin-top: 3rem; color: var(--accent-2);">
+              Obrigado! 🚀
+            </div>
+          </div>
+        `
       }
     ];
     // =====================================================================
 
     // Utilidades
-    const totalDuration = slides.reduce((acc, s) => acc + s.duration, 0); // em segundos
+    const totalDuration = slides.reduce((acc, s) => acc + s.duration, 0);
     const pad = n => String(n).padStart(2, "0");
     const fmt = secs => `${pad(Math.floor(secs/60))}:${pad(Math.max(0, Math.floor(secs%60)))}`;
 
@@ -277,21 +621,12 @@
 
     // Dois layers para animar entre eles
     const layers = {
-      A: {
-        box:  document.getElementById("slideA"),
-        label:document.getElementById("slideALabel"),
-        text: document.getElementById("slideAText"),
-        sub:  document.getElementById("slideASub"),
-      },
-      B: {
-        box:  document.getElementById("slideB"),
-        label:document.getElementById("slideBLabel"),
-        text: document.getElementById("slideBText"),
-        sub:  document.getElementById("slideBSub"),
-      }
+      A: document.getElementById("slideA"),
+      B: document.getElementById("slideB")
     };
-    let front = 'A'; // layer na frente
-    const getBackLayer  = () => (front === 'A' ? 'B' : 'A');
+    
+    let front = 'A';
+    const getBackLayer = () => (front === 'A' ? 'B' : 'A');
 
     // Estado
     let started = false, paused = false;
@@ -309,7 +644,6 @@
     const fsBtn    = document.getElementById("fsBtn");
 
     function setControls(state){
-      // state: idle, running, paused, finished
       if(state === 'idle'){
         startBtn.disabled = false; 
         pauseBtn.disabled = true; 
@@ -339,19 +673,22 @@
       }
     }
 
-    // Inicializa visão do primeiro slide (sem animação)
+    // Renderiza conteúdo do slide
+    function renderSlide(layer, slideData) {
+      layer.innerHTML = `
+        <div class="label">${slideData.label}</div>
+        ${slideData.content}
+      `;
+    }
+
+    // Inicializa visão do primeiro slide
     function mountInitial(){
-      const s = slides[0];
-      layers.A.label.textContent = s.label;
-      layers.A.text.textContent  = s.text;
-      layers.A.sub.textContent = '';
-      layers.B.label.textContent = '';
-      layers.B.text.textContent  = '';
-      layers.B.sub.textContent = '';
-      totalClock.textContent     = fmt(totalDuration);
-      segmentClock.textContent   = fmt(slides[0].duration);
-      currentLabel.textContent   = s.label;
-      topicIndexEl.textContent   = `1 / ${slides.length}`;
+      renderSlide(layers.A, slides[0]);
+      layers.B.innerHTML = '';
+      totalClock.textContent = fmt(totalDuration);
+      segmentClock.textContent = fmt(slides[0].duration);
+      currentLabel.textContent = slides[0].label;
+      topicIndexEl.textContent = `1 / ${slides.length}`;
       totalBar.style.inset = "0 100% 0 0";
       segmentBar.style.inset = "0 100% 0 0";
       stage.classList.remove('warning');
@@ -408,7 +745,7 @@
       rafId = requestAnimationFrame(tick);
     }
 
-    // Mostra slide idx no layer de trás e faz animação de slide
+    // Mostra slide idx no layer de trás e faz animação
     function showSlide(newIdx, direction = 'next'){
       if(transitionInProgress) return;
       transitionInProgress = true;
@@ -416,15 +753,12 @@
       const incoming = layers[getBackLayer()];
       const outgoing = layers[front];
 
-      const s = slides[newIdx];
-      incoming.label.textContent = s.label;
-      incoming.text.textContent  = s.text;
-      incoming.sub.textContent = '';
+      renderSlide(incoming, slides[newIdx]);
 
       // reset posições
-      gsap.set(incoming.box, { xPercent: (direction === 'next' ? 100 : -100), autoAlpha:1 });
-      incoming.box.classList.remove('hidden');
-      outgoing.box.classList.remove('hidden');
+      gsap.set(incoming, { xPercent: (direction === 'next' ? 100 : -100), autoAlpha:1 });
+      incoming.classList.remove('hidden');
+      outgoing.classList.remove('hidden');
 
       // timeline da transição
       const tl = gsap.timeline({ 
@@ -434,20 +768,19 @@
         }
       });
       
-      tl.to(outgoing.box, { xPercent: (direction === 'next' ? -100 : 100), autoAlpha:0 }, 0)
-        .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
+      tl.to(outgoing, { xPercent: (direction === 'next' ? -100 : 100), autoAlpha:0 }, 0)
+        .to(incoming, { xPercent: 0, autoAlpha:1 }, 0)
         .add(() => {
-          // troca as frentes
-          outgoing.box.classList.add('hidden');
+          outgoing.classList.add('hidden');
           front = getBackLayer();
         });
 
       // Atualiza HUD
-      currentLabel.textContent = s.label;
+      currentLabel.textContent = slides[newIdx].label;
       topicIndexEl.textContent = `${newIdx+1} / ${slides.length}`;
       segmentClock.textContent = fmt(slides[newIdx].duration);
       
-      // Recalcula tempo do segmento se já iniciado
+      // Recalcula tempo do segmento
       if(started && !paused){
         const now = Date.now();
         const elapsed = Math.floor((now - startTs - pausedAccum)/1000);
@@ -506,23 +839,34 @@
       setControls('finished');
       cancelAnimationFrame(rafId);
       
-      // Slide final: escreve "FIM"
+      const finalContent = {
+        label: "Finalizado",
+        content: `
+          <div class="content">
+            <div class="topic" style="color: var(--accent);">
+              Apresentação Concluída! 🎯
+            </div>
+            <div class="sub" style="margin-top: 2rem;">
+              Obrigado pela atenção!
+            </div>
+          </div>
+        `
+      };
+      
       const incoming = layers[getBackLayer()];
       const outgoing = layers[front];
       
-      incoming.label.textContent = "Concluído";
-      incoming.text.textContent  = "Obrigado!";
-      incoming.sub.textContent = '';
+      renderSlide(incoming, finalContent);
       
-      gsap.set(incoming.box, { xPercent: 100, autoAlpha:1 });
-      incoming.box.classList.remove('hidden');
-      outgoing.box.classList.remove('hidden');
+      gsap.set(incoming, { xPercent: 100, autoAlpha:1 });
+      incoming.classList.remove('hidden');
+      outgoing.classList.remove('hidden');
       
       gsap.timeline({ defaults:{ duration:.65, ease:"power3.inOut" }})
-         .to(outgoing.box, { xPercent: -100, autoAlpha:0 }, 0)
-         .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
+         .to(outgoing, { xPercent: -100, autoAlpha:0 }, 0)
+         .to(incoming, { xPercent: 0, autoAlpha:1 }, 0)
          .add(()=>{ 
-           outgoing.box.classList.add('hidden');
+           outgoing.classList.add('hidden');
            front = getBackLayer(); 
          });
          
@@ -543,12 +887,11 @@
       pausedAccum = 0;
       transitionInProgress = false;
       
-      // Traz layer A à frente e limpa B
       front = 'A';
-      layers.A.box.classList.remove('hidden');
-      layers.B.box.classList.add('hidden');
-      gsap.set(layers.A.box, { xPercent:0, autoAlpha:1 });
-      gsap.set(layers.B.box, { xPercent:100, autoAlpha:0 });
+      layers.A.classList.remove('hidden');
+      layers.B.classList.add('hidden');
+      gsap.set(layers.A, { xPercent:0, autoAlpha:1 });
+      gsap.set(layers.B, { xPercent:100, autoAlpha:0 });
       
       mountInitial();
     }
