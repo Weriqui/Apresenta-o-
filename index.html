@@ -77,9 +77,10 @@
       background: linear-gradient(180deg, #1b2438, #141b2c);
       color:var(--ink);
       border:1px solid #25324a;
-      transition: transform .05s ease;
+      transition: transform .05s ease, opacity .2s ease;
     }
-    button:active{ transform: translateY(1px) }
+    button:active:not(:disabled){ transform: translateY(1px) }
+    button:disabled{ opacity:0.4; cursor:not-allowed }
     .primary{ background: linear-gradient(180deg,#1c2d38,#14242b); border-color:#1e3a4c }
     .ghost{ background:transparent; border-color:#2a3a55 }
     .danger{ background: linear-gradient(180deg,#3a1c20,#2a1216); border-color:#411a1f }
@@ -112,7 +113,7 @@
       display:grid; place-items:center;
       padding: clamp(1rem, 2vw, 2rem);
     }
-    .slide.hidden{ visibility:hidden }
+    .slide.hidden{ visibility:hidden; pointer-events:none }
     .label{
       position:absolute; top:1rem; left:1rem;
       color:#c7d2fe; background:#0d1220; border:1px solid #202a44;
@@ -124,7 +125,6 @@
       max-width: 90ch;
       text-align:center;
       line-height: 1.1;
-      /* enorme mas responsivo */
       font-size: clamp(2rem, 8.5vw, 7rem);
       font-weight: 900;
       letter-spacing: -.02em;
@@ -218,7 +218,7 @@
   </div>
 
   <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-+hx/3nU8Ost7WZqQEeXqR2p2a6C2g2GJ9pM0EcTgGm1HH4XWkqM1uQRZ2o+GXeh0Qu2pxaHeWUeVv0s4pZAYsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
     // ======= CONFIGURAÇÃO DO ROTEIRO (edite aqui se quiser ajustar) =======
@@ -291,13 +291,14 @@
       }
     };
     let front = 'A'; // layer na frente
-    const back  = () => (front === 'A' ? 'B' : 'A');
+    const getBackLayer  = () => (front === 'A' ? 'B' : 'A');
 
     // Estado
     let started = false, paused = false;
     let startTs = 0, pauseTs = 0, pausedAccum = 0;
     let idx = 0;
     let rafId = null;
+    let transitionInProgress = false;
 
     // Controles
     const startBtn = document.getElementById("startBtn");
@@ -309,17 +310,32 @@
 
     function setControls(state){
       // state: idle, running, paused, finished
-      const g = (b, on) => b.disabled = !on;
       if(state === 'idle'){
-        g(startBtn, true); g(pauseBtn, false); g(nextBtn, false); g(prevBtn, false); g(resetBtn, false);
+        startBtn.disabled = false; 
+        pauseBtn.disabled = true; 
+        nextBtn.disabled = true; 
+        prevBtn.disabled = true; 
+        resetBtn.disabled = true;
       } else if(state === 'running'){
-        g(startBtn, false); g(pauseBtn, true); g(nextBtn, true); g(prevBtn, true); g(resetBtn, true);
+        startBtn.disabled = true; 
+        pauseBtn.disabled = false; 
+        nextBtn.disabled = false; 
+        prevBtn.disabled = false; 
+        resetBtn.disabled = false;
         pauseBtn.textContent = 'Pausar';
       } else if(state === 'paused'){
-        g(startBtn, false); g(pauseBtn, true); g(nextBtn, true); g(prevBtn, true); g(resetBtn, true);
+        startBtn.disabled = true; 
+        pauseBtn.disabled = false; 
+        nextBtn.disabled = false; 
+        prevBtn.disabled = false; 
+        resetBtn.disabled = false;
         pauseBtn.textContent = 'Retomar';
       } else if(state === 'finished'){
-        g(startBtn, false); g(pauseBtn, false); g(nextBtn, false); g(prevBtn, false); g(resetBtn, true);
+        startBtn.disabled = true; 
+        pauseBtn.disabled = true; 
+        nextBtn.disabled = true; 
+        prevBtn.disabled = true; 
+        resetBtn.disabled = false;
       }
     }
 
@@ -328,26 +344,34 @@
       const s = slides[0];
       layers.A.label.textContent = s.label;
       layers.A.text.textContent  = s.text;
+      layers.A.sub.textContent = '';
       layers.B.label.textContent = '';
       layers.B.text.textContent  = '';
+      layers.B.sub.textContent = '';
       totalClock.textContent     = fmt(totalDuration);
       segmentClock.textContent   = fmt(slides[0].duration);
       currentLabel.textContent   = s.label;
       topicIndexEl.textContent   = `1 / ${slides.length}`;
+      totalBar.style.inset = "0 100% 0 0";
+      segmentBar.style.inset = "0 100% 0 0";
+      stage.classList.remove('warning');
       setControls('idle');
     }
-    mountInitial();
 
     // Calcula quanto já passou dentro do tópico atual
     function elapsedInCurrent(nowSecs){
       let spent = 0;
-      for(let i=0;i<idx;i++){ spent += slides[i].duration; }
+      for(let i=0; i<idx; i++){ 
+        spent += slides[i].duration; 
+      }
       return Math.max(0, nowSecs - spent);
     }
 
     // Timer + avanço automático
     function tick(){
-      if(!started){ return; }
+      if(!started || paused){ 
+        return; 
+      }
 
       const now = Date.now();
       const elapsed = Math.floor((now - startTs - pausedAccum)/1000);
@@ -355,7 +379,7 @@
       // Total
       const remaining = Math.max(0, totalDuration - elapsed);
       totalClock.textContent = fmt(remaining);
-      totalBar.style.inset = `0 ${100 - (elapsed/totalDuration)*100}% 0 0`;
+      totalBar.style.inset = `0 ${Math.max(0, 100 - (elapsed/totalDuration)*100)}% 0 0`;
 
       // Segmento
       const segElapsed = elapsedInCurrent(elapsed);
@@ -365,14 +389,14 @@
       segmentBar.style.inset = `0 ${Math.max(0, 100 - (segElapsed/segDur)*100)}% 0 0`;
 
       // Sinal visual nos últimos 10s do tópico
-      if(segRemaining <= 10){
+      if(segRemaining <= 10 && segRemaining > 0){
         stage.classList.add('warning');
       }else{
         stage.classList.remove('warning');
       }
 
       // Avança automaticamente quando o segmento acabar
-      if(segElapsed >= segDur){
+      if(segElapsed >= segDur && idx < slides.length - 1){
         goNext('auto');
       }
 
@@ -386,12 +410,16 @@
 
     // Mostra slide idx no layer de trás e faz animação de slide
     function showSlide(newIdx, direction = 'next'){
-      const incoming = layers[back()];
+      if(transitionInProgress) return;
+      transitionInProgress = true;
+      
+      const incoming = layers[getBackLayer()];
       const outgoing = layers[front];
 
       const s = slides[newIdx];
       incoming.label.textContent = s.label;
       incoming.text.textContent  = s.text;
+      incoming.sub.textContent = '';
 
       // reset posições
       gsap.set(incoming.box, { xPercent: (direction === 'next' ? 100 : -100), autoAlpha:1 });
@@ -399,28 +427,48 @@
       outgoing.box.classList.remove('hidden');
 
       // timeline da transição
-      const tl = gsap.timeline({ defaults: { duration: .65, ease: "power3.inOut" } });
+      const tl = gsap.timeline({ 
+        defaults: { duration: .65, ease: "power3.inOut" },
+        onComplete: () => {
+          transitionInProgress = false;
+        }
+      });
+      
       tl.to(outgoing.box, { xPercent: (direction === 'next' ? -100 : 100), autoAlpha:0 }, 0)
         .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
         .add(() => {
           // troca as frentes
           outgoing.box.classList.add('hidden');
-          front = back();
+          front = getBackLayer();
         });
 
       // Atualiza HUD
       currentLabel.textContent = s.label;
       topicIndexEl.textContent = `${newIdx+1} / ${slides.length}`;
       segmentClock.textContent = fmt(slides[newIdx].duration);
+      
+      // Recalcula tempo do segmento se já iniciado
+      if(started && !paused){
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTs - pausedAccum)/1000);
+        const segElapsed = elapsedInCurrent(elapsed);
+        const segDur = slides[newIdx].duration;
+        const segRemaining = Math.max(0, segDur - segElapsed);
+        segmentClock.textContent = fmt(segRemaining);
+        segmentBar.style.inset = `0 ${Math.max(0, 100 - (segElapsed/segDur)*100)}% 0 0`;
+      }
     }
 
     function goNext(reason='manual'){
-      if(idx >= slides.length - 1){ finish(); return; }
+      if(idx >= slides.length - 1 || transitionInProgress){ 
+        return; 
+      }
       idx++;
       showSlide(idx, 'next');
     }
+    
     function goPrev(){
-      if(idx <= 0) return;
+      if(idx <= 0 || transitionInProgress) return;
       idx--;
       showSlide(idx, 'prev');
     }
@@ -428,12 +476,11 @@
     function start(){
       if(started) return;
       started = true;
+      paused = false;
       startTs = Date.now();
       pausedAccum = 0;
-      setControls('running');
-      // Garante que estamos no primeiro slide visualmente
       idx = 0;
-      showSlide(0, 'next');
+      setControls('running');
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(tick);
     }
@@ -455,18 +502,30 @@
 
     function finish(){
       started = false;
+      paused = false;
       setControls('finished');
       cancelAnimationFrame(rafId);
+      
       // Slide final: escreve "FIM"
-      const incoming = layers[back()];
+      const incoming = layers[getBackLayer()];
+      const outgoing = layers[front];
+      
       incoming.label.textContent = "Concluído";
       incoming.text.textContent  = "Obrigado!";
+      incoming.sub.textContent = '';
+      
       gsap.set(incoming.box, { xPercent: 100, autoAlpha:1 });
       incoming.box.classList.remove('hidden');
+      outgoing.box.classList.remove('hidden');
+      
       gsap.timeline({ defaults:{ duration:.65, ease:"power3.inOut" }})
-         .to(layers[front].box, { xPercent: -100, autoAlpha:0 }, 0)
+         .to(outgoing.box, { xPercent: -100, autoAlpha:0 }, 0)
          .to(incoming.box, { xPercent: 0, autoAlpha:1 }, 0)
-         .add(()=>{ front = back(); });
+         .add(()=>{ 
+           outgoing.box.classList.add('hidden');
+           front = getBackLayer(); 
+         });
+         
       totalClock.textContent = "00:00";
       segmentClock.textContent = "00:00";
       totalBar.style.inset = "0 0 0 0";
@@ -476,41 +535,68 @@
 
     function reset(){
       cancelAnimationFrame(rafId);
-      started=false; paused=false; idx=0; startTs=0; pauseTs=0; pausedAccum=0;
+      started = false; 
+      paused = false; 
+      idx = 0; 
+      startTs = 0; 
+      pauseTs = 0; 
+      pausedAccum = 0;
+      transitionInProgress = false;
+      
       // Traz layer A à frente e limpa B
       front = 'A';
       layers.A.box.classList.remove('hidden');
       layers.B.box.classList.add('hidden');
       gsap.set(layers.A.box, { xPercent:0, autoAlpha:1 });
-      gsap.set(layers.B.box, { xPercent:0, autoAlpha:1 });
+      gsap.set(layers.B.box, { xPercent:100, autoAlpha:0 });
+      
       mountInitial();
     }
 
     // Eventos de UI
     startBtn.addEventListener('click', start);
     pauseBtn.addEventListener('click', pauseResume);
-    nextBtn.addEventListener('click', goNext);
+    nextBtn.addEventListener('click', () => goNext());
     prevBtn.addEventListener('click', goPrev);
     resetBtn.addEventListener('click', reset);
     fsBtn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(()=>{});
+        document.documentElement.requestFullscreen().catch((err)=>{
+          console.log('Erro ao entrar em tela cheia:', err);
+        });
       } else {
-        document.exitFullscreen().catch(()=>{});
+        document.exitFullscreen().catch((err)=>{
+          console.log('Erro ao sair de tela cheia:', err);
+        });
       }
     });
 
     // Teclas de atalho
     window.addEventListener('keydown', (e)=>{
-      if(e.key === ' '){ e.preventDefault(); if(started) pauseResume(); }
-      if(e.key === 'ArrowRight'){ goNext(); }
-      if(e.key === 'ArrowLeft'){ goPrev(); }
-      if(e.key.toLowerCase() === 'f'){ fsBtn.click(); }
-      if(e.key.toLowerCase() === 'r'){ reset(); }
+      if(e.key === ' '){ 
+        e.preventDefault(); 
+        if(!started){ 
+          start(); 
+        } else { 
+          pauseResume(); 
+        }
+      }
+      if(e.key === 'ArrowRight' && started && !transitionInProgress){ 
+        goNext(); 
+      }
+      if(e.key === 'ArrowLeft' && started && !transitionInProgress){ 
+        goPrev(); 
+      }
+      if(e.key.toLowerCase() === 'f'){ 
+        fsBtn.click(); 
+      }
+      if(e.key.toLowerCase() === 'r' && started){ 
+        reset(); 
+      }
     });
 
-    // Estados iniciais dos botões
-    setControls('idle');
+    // Inicialização
+    mountInitial();
   </script>
 </body>
 </html>
